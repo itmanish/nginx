@@ -1,5 +1,11 @@
 FROM ubuntu
-RUN apt-get update
-RUN apt-get -y install nginx
-ADD . /var/www/html
-ENTRYPOINT apachectl -D FOREGROUND
+RUN apt-get update \
+    && apt-get install -y nginx \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && echo "daemon off;" >> /etc/nginx/nginx.conf
+
+ADD default /etc/nginx/sites-available/default
+
+EXPOSE 80
+CMD ["nginx"]
